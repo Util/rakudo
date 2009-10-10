@@ -8,7 +8,7 @@ BEGIN_OPS_PREAMBLE
 #include "parrot/dynext.h"
 #include "pmc_object.h"
 #include "../pmc/pmc_p6lowlevelsig.h"
-#include "../binder/sigguts.h"
+#include "../binder/bind.h"
 
 #if PARROT_HAS_ICU
 #  include <unicode/uchar.h>
