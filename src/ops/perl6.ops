@@ -591,7 +591,13 @@ inline op bind_signature(in PMC, in PMC) :base_core {
         PMC *signature      = VTABLE_getprop(interp, sub, string_from_literal(interp, "$!signature"));
         INTVAL noms_checked = PObj_flag_TEST(P6S_ALREADY_CHECKED, ctx);
         STRING *error       = NULL;
-        if (!Rakudo_binding_bind_signature(interp, lexpad, signature, $1, $2, noms_checked, &error)) {
+        struct llsig_element **elements;
+        INTVAL num_elements;
+        
+        /* Extract bits from the signature and invoke the binder. */
+        GETATTR_P6LowLevelSig_elements(interp, signature, elements);
+        GETATTR_P6LowLevelSig_num_elements(interp, signature, num_elements);
+        if (!Rakudo_binding_bind_signature(interp, lexpad, elements, num_elements, $1, $2, noms_checked, &error)) {
             opcode_t *handler =  Parrot_ex_throw_from_op_args(interp, NULL,
                     EXCEPTION_INVALID_OPERATION, Parrot_str_to_cstring(interp, error));
             goto ADDRESS(handler);

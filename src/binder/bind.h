@@ -5,6 +5,7 @@
 #define SIG_ELEM_SLURPY_POS        8
 #define SIG_ELEM_SLURPY_NAMED      16
 #define SIG_ELEM_SLURPY_BLOCK      32
+#define SIG_ELEM_SLURPY            (SIG_ELEM_SLURPY_POS | SIG_ELEM_SLURPY_NAMED | SIG_ELEM_SLURPY_BLOCK)
 #define SIG_ELEM_INVOCANT          64
 #define SIG_ELEM_MULTI_INVOCANT    128
 #define SIG_ELEM_IS_RW             256
@@ -42,8 +43,9 @@ typedef struct llsig_element {
 
 
 /* A function we want to share to provide the interface to the binder. */
-PARROT_EXPORT
 INTVAL
-Rakudo_binding_bind_signature(PARROT_INTERP, PMC *lexpad, PMC *signature,
+PARROT_DYNEXT_EXPORT
+Rakudo_binding_bind_signature(PARROT_INTERP, PMC *lexpad,
+                              llsig_element **elements, INTVAL num_elements,
                               PMC *pos_args, PMC *named_args,
                               INTVAL no_nom_type_check, STRING **error);
