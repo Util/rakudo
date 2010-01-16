@@ -2,7 +2,8 @@ class Rat {
     has $.numerator;
     has $.denominator;
 
-    my sub gcd(Int $a is copy, Int $b is copy) {
+    # XXX TODO: should be lexical sub, but can't do those subs in setting yet.
+    sub gcd(Int $a is copy, Int $b is copy) {
         $a = -$a if ($a < 0);
         $b = -$b if ($b < 0);
         while $a > 0 && $b > 0 {
@@ -43,32 +44,42 @@ class Rat {
     multi method pred {
         Rat.new($!numerator - $!denominator, $!denominator);
     }
+
+    multi method abs {
+        self < 0 ?? -self !! self;
+    }
+
+    our Int multi method sign() {
+        self.Num.sign
+    }
 }
 
 multi sub infix:<+>(Rat $a, Rat $b) {
-    Rat.new($a.numerator * $b.denominator + $b.numerator * $a.denominator,
-            $a.denominator * $b.denominator );
+    my $gcd = Rat::gcd($a.denominator, $b.denominator);
+    ($a.numerator * ($b.denominator div $gcd) + $b.numerator * ($a.denominator div $gcd))
+        / (($a.denominator div $gcd) * $b.denominator);
 }
 
 multi sub infix:<+>(Rat $a, Int $b) {
-    Rat.new($a.numerator + $b * $a.denominator, $a.denominator);
+    ($a.numerator + $b * $a.denominator) / $a.denominator;
 }
 
 multi sub infix:<+>(Int $a, Rat $b) {
-    Rat.new($a * $b.denominator + $b.numerator, $b.denominator);
+    ($a * $b.denominator + $b.numerator) / $b.denominator;
 }
 
 multi sub infix:<->(Rat $a, Rat $b) {
-    Rat.new($a.numerator * $b.denominator - $b.numerator * $a.denominator,
-            $a.denominator * $b.denominator );
+    my $gcd = Rat::gcd($a.denominator, $b.denominator);
+    ($a.numerator * ($b.denominator div $gcd) - $b.numerator * ($a.denominator div $gcd))
+        / (($a.denominator div $gcd) * $b.denominator);
 }
 
 multi sub infix:<->(Rat $a, Int $b) {
-    Rat.new($a.numerator - $b * $a.denominator, $a.denominator);
+    ($a.numerator - $b * $a.denominator) / $a.denominator;
 }
 
 multi sub infix:<->(Int $a, Rat $b) {
-    Rat.new($a * $b.denominator - $b.numerator, $b.denominator);
+    ($a * $b.denominator - $b.numerator) / $b.denominator;
 }
 
 multi sub prefix:<->(Rat $a) {
@@ -76,27 +87,27 @@ multi sub prefix:<->(Rat $a) {
 }
 
 multi sub infix:<*>(Rat $a, Rat $b) {
-    Rat.new($a.numerator * $b.numerator, $a.denominator * $b.denominator);
+    ($a.numerator * $b.numerator) / ($a.denominator * $b.denominator);
 }
 
 multi sub infix:<*>(Rat $a, Int $b) {
-    Rat.new($a.numerator * $b, $a.denominator);
+    ($a.numerator * $b) / $a.denominator;
 }
 
 multi sub infix:<*>(Int $a, Rat $b) {
-    Rat.new($a * $b.numerator, $b.denominator);
+    ($a * $b.numerator) / $b.denominator;
 }
 
 multi sub infix:</>(Rat $a, Rat $b) {
-    Rat.new($a.numerator * $b.denominator, $a.denominator * $b.numerator);
+    ($a.numerator * $b.denominator) / ($a.denominator * $b.numerator);
 }
 
 multi sub infix:</>(Rat $a, Int $b) {
-    Rat.new($a.numerator, $a.denominator * $b);
+    $a.numerator / ($a.denominator * $b);
 }
 
 multi sub infix:</>(Int $a, Rat $b) {
-    Rat.new($b.denominator * $a, $b.numerator);
+    ($b.denominator * $a) / $b.numerator;
 }
 
 multi sub infix:</>(Int $a, Int $b) {

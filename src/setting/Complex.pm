@@ -20,7 +20,7 @@ class Complex {
     multi method Complex() { self }
 
     multi method perl() {
-        "Complex.new($.re, $.im)";
+        "Complex.new({$.re.perl}, {$.im.perl})";
     }
 
     multi method Str() {
@@ -147,6 +147,10 @@ class Complex {
         }
     }
 
+    multi method log($base) {
+        $.log / $base.log;
+    }
+
     multi method log10() {
         $.log / 10.log;
     }
@@ -157,12 +161,16 @@ class Complex {
 
     multi method roots($n is copy) {
         my ($mag, $angle) = @.polar;
-	return NaN  if $n < 1;
-	return self if $n == 1;
-	return NaN  if $!re|$!im ~~  Inf|NaN|-Inf; 
-	$n = $n.Int;
+        return NaN  if $n < 1;
+        return self if $n == 1;
+        return NaN  if $!re|$!im ~~  Inf|NaN|-Inf;
+        $n = $n.Int;
         $mag **= 1/$n;
         (^$n).map: { $mag.unpolar( ($angle + $_ * 2 * pi) / $n) };
+    }
+
+    multi method sign() {
+        fail('Cannot take the sign() of a Complex number');
     }
 
     multi method sqrt() {
@@ -218,11 +226,11 @@ class Complex {
     }
 
     multi method Num {
-	if $!im == 0 {
-	     $!re;
-	} else {
-	     fail "You can only coerce a Complex to Num if the imaginary part is zero"
-	}
+        if $!im == 0 {
+            $!re;
+        } else {
+            fail "You can only coerce a Complex to Num if the imaginary part is zero"
+        }
     }
 }
 
@@ -296,13 +304,7 @@ multi sub infix:<**>($a, Complex $b) {
     ($a.log * $b).exp;
 }
 
-multi sub log(Complex $x) {
-    $x.log()
-}
-
-multi sub log10(Complex $x) {
-    $x.log10;
-}
+multi sub sign(Complex $x) { $x.sign }
 
 multi sub sqrt(Complex $x) {
     $x.sqrt;

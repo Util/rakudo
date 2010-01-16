@@ -798,12 +798,9 @@ and C<type>.
     # For the handles trait verb, we may have got a name or a list of names.
     # If so, just generate methods with those names. Otherwise, need to store
     # them as a property on the metaclass, so the dispatcher can smart-match
-    # against them later. Also, the % syntax is spec'd as reserved, so we give
-    # an error on that for now.
+    # against them later.
     .const 'Sub' handles = '!handles'
     .local pmc handles_it
-    $S0 = substr name, 0, 1
-    if $S0 == '%' goto reserved_syntax_error
     $I0 = isa $P0, 'Str'
     if $I0 goto simple_handles
     $I0 = isa $P0, 'List'
@@ -848,8 +845,6 @@ and C<type>.
     goto handles_loop
   handles_done:
     .return ()
-  reserved_syntax_error:
-    'die'("The use of a %hash with the handles trait verb is reserved")
 .end
 
 
@@ -865,19 +860,6 @@ and C<type>.
     attribute = getattribute self, attrname
     $P1 = getprop 'methodname', method
     $S1 = $P1
-    $S0 = substr attrname, 0, 1
-    if $S0 != '@' goto single_dispatch
-    .local pmc it
-    it = iter attribute
-  it_loop:
-    unless it goto it_loop_end
-    $P0 = shift it
-    $I0 = $P0.'can'($S1)
-    unless $I0 goto it_loop
-    .tailcall $P0.$S1(args :flat, options :flat :named)
-  it_loop_end:
-    'die'("You used handles on attribute ", attrname, ", but nothing in the array can do method ", $S1)
-  single_dispatch:
     .tailcall attribute.$S1(args :flat, options :flat :named)
 .end
 
@@ -1336,11 +1318,12 @@ Reblesses a sub into a new type.
     .param string new_type_name
 
     # Create the correct object and rebless the sub into that class.
-    .local pmc new_type
+    .local pmc new_type, p6meta
+    p6meta = get_hll_global ['Perl6Object'], '$!P6META'
     new_type = get_hll_global new_type_name
-    $P0 = new_type.'new'()
-    $P0 = typeof $P0
+    $P0 = p6meta.'get_parrotclass'(new_type)
     rebless_subclass sub, $P0
+    transform_to_p6opaque sub
 
     # We also make sure the Parrot-level sub has a backlink to the
     # Rakudo-level object, since interpinfo only gives us the

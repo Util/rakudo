@@ -1,12 +1,32 @@
+New in 2009-11 release
++ Rakudo now uses Parrot's updated calling convention features
++ support unpacking of arrays, hashes and objects in signatures
++ changed .pick to use :replace instead of :repl
++ many core setting optimizations and bugfixes
++ IO::Socket.recv() has been extended to accept a parameter specifying the
+  number of bytes which will be received
++ Rakudo now looks up %INC in the right namespace when loading libraries for
+  foreign languages
+
 New in 2009-10 release
 + smolder reports for spectest runs
 + more Complex trig functions
-+ pure Perl implementation of the Complex type
++ pure Perl 6 implementation of the Complex type
 + some variants of the new series operator
 + correct construction of twigilled colonpairs
 + infix:<eqv>, .pred and .succ for the Rat type
 + when configuring with --gen-parrot, pass --optimize to parrot's Configure.pl
-+ moved more operators the setting and thus made them overloadable
++ moved more operators to the setting and thus made them overloadable
++ { %hash } now correctly constructs a hash, not a closure
++ new, faster low level Signature type
++ improved Signature introspection
++ new, much faster signature binder
++ improved various error messages related to signature binding
++ signature literals now supported
++ binding of named arguments to positional parameters
++ attributive parameters implemented
++ package blocks now run as immediate blocks, as per the spec
++ lexical variables declared outside of packages now visible inside them
 
 New in 2009-09 release
 + updates to numeric operators: infix</>(Int, Int) creates a Rat

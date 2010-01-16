@@ -25,6 +25,9 @@ This is the base file for the Rakudo Perl 6 compiler.
     exit 1
   startup_ok:
 
+    # Do dynop initialization tasks.
+    rakudo_dynop_setup
+
     .local pmc p6meta
     load_bytecode 'PCT.pbc'
     $P0 = get_root_global ['parrot'], 'P6metaclass'
@@ -38,6 +41,10 @@ This is the base file for the Rakudo Perl 6 compiler.
     exports = split ' ', '!DISPATCH_JUNCTION_MULTI'
     parrotns.'export_to'(hllns, imports)
     hllns.'export_to'(parrotns, exports)
+
+    # to ease transition, make Mu and alias to Object for now
+    $P2 = get_hll_global 'Object'
+    set_hll_global 'Mu', $P2
 .end
 
 
@@ -61,7 +68,7 @@ Creates the Perl 6 compiler by subclassing a C<PCT::HLLCompiler> object.
     .local pmc p6meta, perl6
     p6meta = get_hll_global ['Perl6Object'], '$!P6META'
     perl6 = p6meta.'new_class'('Perl6::Compiler', 'parent'=>'PCT::HLLCompiler')
-    p6meta.'new_class'('Perl6::Compiler::Signature', 'attr'=>'$!entries $!default_type')
+    p6meta.'new_class'('Perl6::Compiler::Signature', 'attr'=>'$!entries $!default_type $!lexicals')
 
     load_bytecode 'config.pbc'
 
@@ -435,7 +442,7 @@ to the Perl 6 compiler.
     if null retval goto fail
     library = new 'Hash'
     library['name'] = name
-    inc_hash = get_hll_global '%INC'
+    inc_hash = get_hll_global ['PROCESS'], '%INC'
     $S0 = inc_hash[$S0]
     library['filename'] = $S0
     $P0 = get_hll_namespace name

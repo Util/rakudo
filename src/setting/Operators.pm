@@ -15,6 +15,14 @@ multi sub infix:<...>($lhs, @rhs) {
     &infix:<...>(@a, @rhs);
 }
 
+multi sub infix:<...>($lhs, Whatever $) {
+    die 'Sorry, lazy lists and infinite ranges are not yet implemented';
+}
+
+multi sub infix:<...>(@lhs, Whatever $) {
+    die 'Sorry, lazy lists and infinite ranges are not yet implemented';
+}
+
 multi sub infix:<...>($lhs, Code $generator) {
     my @a = $lhs;
     &infix:<...>(@a, $generator);
@@ -94,6 +102,7 @@ multi sub infix:<...>($lhs, $rhs where { !($_ ~~ Code|Whatever) }) {
 multi sub infix:<eqv> (Num $a, Num $b) { $a === $b }
 multi sub infix:<eqv> (Str $a, Str $b) { $a === $b }
 multi sub infix:<eqv> (Code $a, Code $b) { $a === $b }
+multi sub infix:<eqv> (Bool $a, Bool $b) { $a === $b }
 multi sub infix:<eqv> (Rat $a, Rat $b) {
     $a.numerator === $b.numerator && $a.denominator == $b.denominator
 };
@@ -128,7 +137,8 @@ multi sub infix:<eqv>(Failure $a, Failure $b) {
 multi sub infix:<eqv> ($a, $b) {
     return Bool::False unless $a.WHAT === $b.WHAT;
     return Bool::True  if     $a      === $b;
-    die "infix:<eqv> is only implemented for certain special cases yet";
+    die "infix:<eqv> is only implemented for certain special cases yet."
+        ~"\n You tried to compare two objects of type " ~ $a.WHAT.perl;
 }
 
 multi sub infix:<minmax>(@a, @b) {
@@ -155,7 +165,7 @@ sub prefix:<[||]>(*@a) {
     return ();
 }
 
-sub infix:<!%>($a, $b) { ! ($a % $b) }
+multi sub infix:<!%>($a, $b) { ! ($a % $b) }
 
 
 multi sub infix:<+>($a, $b) {

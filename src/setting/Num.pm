@@ -142,7 +142,7 @@ class Num is also {
         $r!from-radians($base)
     }
 
-    our Num multi method atan2(Num $x = 1, $base = 'radians') is export {
+    our Num multi method atan2(Num $x = 1, $base = 'radians') {
         my $r = Q:PIR {
             $N0 = self
             $P1 = find_lex "$x"
@@ -238,6 +238,10 @@ class Num is also {
         }
     }
 
+    multi method log($base) {
+        $.log / $base.log;
+    }
+
     our method log10 {
         Q:PIR {
             $N0 = self
@@ -250,7 +254,7 @@ class Num is also {
         ~self
     }
 
-    my sub _modf($num) { my $q = $num.Int; $num - $q, $q; }
+    sub _modf($num) { my $q = $num.Int; $num - $q, $q; }
 
     multi method Rat($epsilon = 1.0e-6) {
         my $num = +self;
@@ -316,6 +320,10 @@ class Num is also {
             $N1 = sinh $N0
             %r = box $N1
         }
+    }
+
+    multi method sign {
+        self ~~ NaN ?? NaN !! self <=> 0;
     }
 
     multi method sqrt() {
