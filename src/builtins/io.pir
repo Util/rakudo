@@ -87,7 +87,7 @@ done_mode:
 Deletes a list of files.  Returns the number of files successfully
 deleted.
 
-    $cnt = unlink 'a', 'b', 'c';
+    $count = unlink 'a', 'b', 'c';
 
 Be warned that unlinking a directory can inflict damage on your filesystem.
 Finally, using C<unlink> on directories is not supported on many operating
