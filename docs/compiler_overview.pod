@@ -64,7 +64,7 @@ to parse Perl 6 source code into a parse tree.
 Currently the parse grammar is spread across three files:
 
     src/parser/grammar.pg           - the top-level grammar
-    src/parser/grammer-oper.pg      - operator tokens
+    src/parser/grammar-oper.pg      - operator tokens
     src/parser/quote_expression.pir - quote rule
 
 The top-level portion of the grammar is written using Perl 6

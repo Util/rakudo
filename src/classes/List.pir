@@ -50,7 +50,7 @@ Smart-matches against the list.
     unless it_b goto it_loop_end
     cur_b = shift it_b
 
-    # If there curent thing is Whatever, need special handling.
+    # If the current thing is Whatever, need special handling.
     $I0 = isa cur_a, ['Whatever']
     unless $I0 goto not_whatever
 

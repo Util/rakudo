@@ -1607,7 +1607,7 @@ method package_def($/, $key) {
 
     if $?PKGDECL eq 'role' {
         # Parametric roles need to have their bodies evaluated per type-
-        # parmeterization, and are "invoked" by 'does'. We make them
+        # parameterization, and are "invoked" by 'does'. We make them
         # multis, and ensure they have a signature. XXX Need to put
         # $?CLASS as first item in signature always too.
         $block.blocktype('declaration');
@@ -3225,7 +3225,7 @@ sub transform_to_multi($past, $already_p6multi) {
 }
 
 
-# Hanldes syntactic forms of smart-matching (factored out here since it's used
+# Handles syntactic forms of smart-matching (factored out here since it's used
 # by infix:~~ and the when statement.
 sub process_smartmatch($lhs, $rhs, $rhs_pt) {
     if $rhs_pt<noun><dotty> {

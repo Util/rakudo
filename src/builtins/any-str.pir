@@ -464,7 +464,7 @@ Returns file size.
   pair_loop:
     unless args, init_trans
     pair = shift args
-    # following is a cludge to get around list context issues
+    # following is a kludge to get around list context issues
     # should be removed once that works
     isatype = isa pair, 'Perl6Pair'
     if isatype goto isa_pair
@@ -619,7 +619,7 @@ Returns file size.
     klen = 0 # key len
     vlen = 0 # val len
     llm = 0 # orig end marker for longest leftmost match
-    tmps = self # reassig; workaround for [perl #59730]
+    tmps = self # reassign; workaround for [perl #59730]
 
   table_loop:
     unless hit_set, done

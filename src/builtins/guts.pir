@@ -336,7 +336,7 @@ to find a real, non-subtype and stash that away for fast access later.
 
 =item !TOPERL6MULTISUB
 
-At the moment, we don't have the abilility to have Parrot use our own MultiSub
+At the moment, we don't have the ability to have Parrot use our own MultiSub
 type, nor are we ready to (because built-ins need to get Perl 6 signatures
 first). So for now we just transform multis in user code like this.
 

@@ -40,7 +40,7 @@ for executable objects.
     .tailcall 'prefix:!'(match)
 .end
 
-=item assumming()
+=item assuming()
 
 Returns a curried version of self.
 
