@@ -53,10 +53,14 @@ D: Keeps us running
 E: ask@develooper.com
 
 N: Audrey Tang
-U: audreyt
-U: autrijus
+U: au
 E: audreyt@audreyt.org
 D: Pugs, a Perl6->Parrot implementation.
+
+N: Вячеслав Матюхин
+U: mmcleric
+E: me@berekuk.ru
+D: Whatever-currying, colonpair fixes
 
 N: Bernhard Schmalhofer
 U: bernhard
@@ -70,6 +74,11 @@ U: rgrjr
 N: Bruce Gray
 U: util
 E: bruce.gray@acm.org
+
+N: Bruce Keeler
+U: bkeeler
+D: variable interpolation into regexes
+
 
 N: Bryan C. Warnock
 D: The First Perl 6 Summarizer
@@ -159,6 +168,13 @@ N: Gregor N. Purdy
 E: gregor@focusresearch.com
 S: Sunnyvale, CA
 
+U: ingy
+N: Ingy döt Net
+E: ingy@ingy.net
+W: http://ingy.net/
+S: Seattle, WA, USA
+D: Make is() work like Perl 5; add .pm6 to extensions searched.
+
 N: James E Keenan (Jim)
 E: jkeenan@cpan.org
 U: jkeenan
@@ -218,6 +234,10 @@ N: Klaas-Jan Stol
 U: kjs
 E: parrotcode@gmail.com
 
+N: Kodi Arfer
+U: Kodi
+W: http://arfer.net
+
 N: Kyle Hasselbacher
 E: kyleha@gmail.com
 U: KyleHa
@@ -254,10 +274,11 @@ N: Matt Diephouse
 U: mdiep
 E: matt@diephouse.com
 
-N: Moritz A Lenz
+N: Moritz Lenz
 E: moritz@faui2k3.org
 U: moritz
-D: Test infrastructure for Perl 6 and Rakudo
+U: moritz_
+D: Test infrastructure, tests, various Rakudo features and built-ins
 
 N: Nicholas Clark
 U: nicholas
@@ -269,6 +290,10 @@ E: julian.notfound@gmail.com
 N: Nuno 'smash' Carvalho
 U: smash
 E: mestre.smash@gmail.com
+
+N: Patrick Abi Salloum
+U: patrickas
+E: patrick.abisalloum@gmail.com
 
 N: Patrick R. Michaud
 U: pmichaud
@@ -299,6 +324,10 @@ D: Keeps us running
 U: robert
 E: robert@perl.org
 
+N: Shrivatsan Sampathkumar
+U: isBEKaml
+E: nastavs@gmail.com
+
 N: Simon Cozens
 U: simon
 E: simon@simon-cozens.org
@@ -314,6 +343,17 @@ N: Stephen Weeks
 U: tene
 D: Minor Rakudo patches
 E: tene@allalone.org
+
+N: Timothy Totten
+U: novus
+D: Temporal (DateTime/Date) modifications
+E: supernovus@gmail.com
+W: http://huri.net/
+
+N: Tyler Curtis
+U: tcurtis
+D: $*ARGFILES
+E: tyler.l.curtis@gmail.com
 
 N: Ujwal Reddy Malipeddi
 E: ujwalic@gmail.com

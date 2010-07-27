@@ -9,7 +9,7 @@ use Cwd;
 
 MAIN: {
     my %options;
-    GetOptions(\%options, 'help!', 'parrot-config=s',
+    GetOptions(\%options, 'help!', 'parrot-config=s', 'makefile-timing!',
                'gen-parrot!', 'gen-parrot-prefix=s', 'gen-parrot-option=s@');
 
     # Print help if it's requested
@@ -81,7 +81,7 @@ END
     verify_parrot(%config);
 
     # Create the Makefile using the information we just got
-    create_makefile(%config);
+    create_makefile($options{'makefile-timing'}, %config);
     my $make = $config{'make'};
 
     {
@@ -127,6 +127,8 @@ sub read_parrot_config {
 sub verify_parrot {
     print "Verifying Parrot installation...\n";
     my %config = @_;
+    my $EXE            = $config{'exe'};
+    my $PARROT_BIN_DIR = $config{'bindir'};
     my $PARROT_VERSION = $config{'versiondir'};
     my $PARROT_LIB_DIR = $config{'libdir'}.$PARROT_VERSION;
     my $PARROT_SRC_DIR = $config{'srcdir'}.$PARROT_VERSION;
@@ -135,8 +137,7 @@ sub verify_parrot {
     my @required_files = (
         "$PARROT_LIB_DIR/library/PGE/Perl6Grammar.pbc",
         "$PARROT_LIB_DIR/library/PCT/HLLCompiler.pbc",
-        "$PARROT_LIB_DIR/languages/nqp/nqp.pbc",
-        "$PARROT_TOOLS_DIR/build/ops2c.pl",
+        "$PARROT_BIN_DIR/ops2c".$EXE,
         "$PARROT_TOOLS_DIR/build/pmc2c.pl",
         "$PARROT_SRC_DIR",
         "$PARROT_SRC_DIR/pmc",
@@ -160,16 +161,21 @@ END
 
 #  Generate a Makefile from a configuration
 sub create_makefile {
-    my %config = @_;
+    my ($makefile_timing, %config) = @_;
 
     my $maketext = slurp( 'build/Makefile.in' );
 
+    $config{'stagestats'} = $makefile_timing ? '--stagestats' : '';
     $config{'win32_libparrot_copy'} = $^O eq 'MSWin32' ? 'copy $(PARROT_BIN_DIR)\libparrot.dll .' : '';
     $maketext =~ s/@(\w+)@/$config{$1}/g;
     if ($^O eq 'MSWin32') {
         $maketext =~ s{/}{\\}g;
         $maketext =~ s{\\\*}{\\\\*}g;
         $maketext =~ s{http:\S+}{ do {my $t = $&; $t =~ s'\\'/'g; $t} }eg;
+    }
+
+    if ($makefile_timing) {
+        $maketext =~ s{(?<!\\\n)^\t(?!\s*-?cd)(?=[^\n]*\S)}{\ttime }mg;
     }
 
     my $outfile = 'Makefile';
@@ -208,8 +214,10 @@ General Options:
     --gen-parrot       Download and build a copy of Parrot to use
     --gen-parrot-option='--option=value'
                        Set parrot config option when using --gen-parrot
-    --parrot-config=(config)
-                       Use configuration information from config
+    --parrot-config=/path/to/parrot_config
+                       Use config information from parrot_config executable
+Experimental developer's options:
+    --makefile-timing  Insert 'time' command all over in the Makefile
 END
 
     return;

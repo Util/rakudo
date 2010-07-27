@@ -1,7 +1,5 @@
 #! perl
 
-# $Id$
-
 # note: Due to a limitation in Getopt::Long options that should be passed
 # through to fudgeall have to come after all other options
 
@@ -21,11 +19,16 @@ GetOptions(
     'tests-from-file=s' => \my $list_file,
     'fudge'             => \my $do_fudge,
     'verbosity=i'       => \$Test::Harness::verbose,
-    'jobs:3'            => \my $jobs,
+    'jobs:1'            => \my $jobs,
     'icu:1'             => \my $do_icu,
+    'long:1'            => \my $do_long,
+    'stress:1'          => \my $do_stress,
     'archive=s'         => \my $archive,
     'parrot_revision=s' => \my $parrot_revision,
 );
+
+$do_long = 1 unless defined $do_long;
+$do_stress = 0 unless defined $do_stress;
 
 my @pass_through_options = grep m/^--?[^-]/, @ARGV;
 my @files = grep m/^[^-]/, @ARGV;
@@ -36,9 +39,14 @@ if ($list_file) {
     while (<$f>) {
         next if m/^\s*#/;
         next unless m/\S/;
-        chomp;
+        s/^\s+//;
+        s/\s+\z//;
         my ($fn, $fudgespec) = split /\s+#\s*/;
-        next if ($fudgespec && ($fudgespec =~ m/icu/) && !$do_icu);
+        if ($fudgespec) {
+            next if ($fudgespec =~ m/icu/)    && !$do_icu;
+            next if ($fudgespec =~ m/long/)   && !$do_long;
+            next if ($fudgespec =~ m/stress/) && !$do_stress;
+        }
         $fn = "t/spec/$fn" unless $fn =~ m/^t\Q$slash\Espec\Q$slash\E/;
         $fn =~ s{/}{$slash}g;
         if ( -r $fn ) {

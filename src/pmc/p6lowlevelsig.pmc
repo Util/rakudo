@@ -1,6 +1,6 @@
 /*
 $Id$
-Copyright (C) 2009, The Perl Foundation.
+Copyright (C) 2009-2010, The Perl Foundation.
 
 =head1 NAME
 
@@ -50,7 +50,7 @@ The number of items we have inside the signature.
 
 */
 
-pmclass P6LowLevelSig need_ext dynpmc group perl6_group {
+pmclass P6LowLevelSig dynpmc group perl6_group manual_attrs {
     ATTR struct llsig_element **elements;
     ATTR INTVAL                 num_elements;
     ATTR PMC                   *named_to_pos_cache;
@@ -72,6 +72,23 @@ Allocates the PMC's underlying storage.
         PObj_custom_mark_destroy_SETALL(SELF);
     }
 
+    VTABLE void init_int(INTVAL init) {
+        llsig_element **elements;
+        INTVAL i;
+
+        SELF.init();
+
+        elements = mem_gc_allocate_n_zeroed_typed(INTERP, init + 1,
+             llsig_element *);
+
+        for (i = 0; i < init; i++)
+            elements[i] = mem_gc_allocate_zeroed_typed(INTERP, llsig_element);
+
+        elements[init] = NULL;
+
+        SETATTR_P6LowLevelSig_elements(interp, SELF, elements);
+        SETATTR_P6LowLevelSig_num_elements(interp, SELF, init);
+    }
 
 /*
 
@@ -94,6 +111,9 @@ Frees the memory associated with this PMC's underlying storage.
                 mem_sys_free(elements[i]);
                 elements[i] = NULL;
             }
+
+        if (elements)
+            mem_sys_free(elements);
 
         /* Now free underlying struct. */
         mem_sys_free(PMC_data(SELF));
@@ -134,8 +154,10 @@ Marks anything we're referencing.
                 Parrot_gc_mark_PMC_alive(interp, elements[i]->nominal_type);
             if (elements[i]->post_constraints)
                 Parrot_gc_mark_PMC_alive(interp, elements[i]->post_constraints);
-            if (elements[i]->sub_signature)
-                Parrot_gc_mark_PMC_alive(interp, elements[i]->sub_signature);
+            if (elements[i]->sub_llsig)
+                Parrot_gc_mark_PMC_alive(interp, elements[i]->sub_llsig);
+            if (elements[i]->coerce_to)
+                Parrot_gc_mark_STRING_alive(interp, elements[i]->coerce_to);
         }
     }
 
@@ -149,7 +171,7 @@ Returns a pointer to the signautre binder.
 */
 
     VTABLE void *get_pointer() {
-        return &Rakudo_binding_bind_signature;
+        return (void *) &Rakudo_binding_bind_llsig;
     }
 }
 
